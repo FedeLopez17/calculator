@@ -1,0 +1,89 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    background-color: aquamarine;
+    justify-content: center;
+    align-items: center;
+    width:100vw;
+    height:100vh;
+}
+
+.calculator{
+    background-color: grey;
+    border-style: solid;
+    border-color:dodgerblue;
+}
+/* Media queries for responsiveness*/
+@media (orientation: landscape){
+    @media (min-aspect-ratio: 16/9){
+        .calculator{
+            width: 30vw;
+            height: 80vh;
+            
+        }
+    }
+    @media(min-aspect-ratio: 13/9) and (max-aspect-ratio: 16/9){
+        .calculator{
+            width: 34vw;
+            height: 80vh;
+            
+        }
+    }
+    @media(min-aspect-ratio: 11/9) and (max-aspect-ratio: 13/9){
+        .calculator{
+            width: 36vw;
+            height: 80vh;
+            
+        }
+    }
+    @media(max-aspect-ratio: 11/9){
+        .calculator{
+            width: 42vw;
+            height: 80vh;
+            
+        }
+    }
+}
+@media (orientation: portrait){
+    @media (min-aspect-ratio: 13/16){
+        .calculator{
+            width: 50vw;
+            height: 80vh;
+            
+        }
+        body{
+            background-color: red;
+        }
+    }
+    @media (min-aspect-ratio: 10/16) and (max-aspect-ratio: 13/16){
+        .calculator{
+            width: 60vw;
+            height: 75vh;
+        }
+        body{
+            background-color: blue;
+        }
+    }
+    @media (max-aspect-ratio: 10/16){
+        .calculator{
+            width: 70vw;
+            height: 70vh;   
+        }
+        body{
+            background-color: purple;
+        }
+    }
+    @media (max-aspect-ratio: 8/16){
+        .calculator{
+            width: 70vw;
+            height: 60vh;   
+        }
+        body{
+            background-color: yellow;
+        }
+    }
+}
