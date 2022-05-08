@@ -14,76 +14,67 @@ body{
 
 .calculator{
     background-color: grey;
-    border-style: solid;
-    border-color:dodgerblue;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
 }
 /* Media queries for responsiveness*/
 @media (orientation: landscape){
-    @media (min-aspect-ratio: 16/9){
-        .calculator{
-            width: 30vw;
-            height: 80vh;
-            
-        }
+    .calculator{
+        width: 60vh;
+        height: 90vh;
+        border-radius: 4vh;   
     }
-    @media(min-aspect-ratio: 13/9) and (max-aspect-ratio: 16/9){
-        .calculator{
-            width: 34vw;
-            height: 80vh;
-            
-        }
-    }
-    @media(min-aspect-ratio: 11/9) and (max-aspect-ratio: 13/9){
-        .calculator{
-            width: 36vw;
-            height: 80vh;
-            
-        }
-    }
-    @media(max-aspect-ratio: 11/9){
-        .calculator{
-            width: 42vw;
-            height: 80vh;
-            
-        }
+    .button{
+        border-radius: 1vh;
     }
 }
 @media (orientation: portrait){
-    @media (min-aspect-ratio: 13/16){
-        .calculator{
-            width: 50vw;
-            height: 80vh;
-            
-        }
-        body{
-            background-color: red;
-        }
+    .calculator{
+        border-radius: 4vw;
     }
-    @media (min-aspect-ratio: 10/16) and (max-aspect-ratio: 13/16){
+    .button{
+        border-radius: 1vw;
+    }
+    @media (min-aspect-ratio: 12/16){
         .calculator{
             width: 60vw;
-            height: 75vh;
-        }
-        body{
-            background-color: blue;
+            height: 90vw;  
         }
     }
-    @media (max-aspect-ratio: 10/16){
+    @media (max-aspect-ratio: 12/16){
         .calculator{
-            width: 70vw;
-            height: 70vh;   
-        }
-        body{
-            background-color: purple;
-        }
-    }
-    @media (max-aspect-ratio: 8/16){
-        .calculator{
-            width: 70vw;
-            height: 60vh;   
-        }
-        body{
-            background-color: yellow;
+            width: 80vw;
+            height: 120vw;
+            align-self: flex-start;
+            margin-top: 10vw;
         }
     }
+}
+
+.buttons-container{
+    flex: 0.7;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: auto;
+    margin-bottom: 5%;
+    gap: 1%;
+}
+
+.row-of-buttons{
+    flex: 1;
+    display:flex;
+    gap: 1%;
+}
+
+.button{
+    flex: 1;
+    border-style: solid;
+}
+
+.wider-button{
+    flex: 2.1;
+    border-style: solid;
 }
