@@ -28,6 +28,8 @@ body{
     }
     .button{
         border-radius: 1vh;
+        border-width: 0.2vh;
+        font-size: 200%;
     }
 }
 @media (orientation: portrait){
@@ -36,6 +38,8 @@ body{
     }
     .button{
         border-radius: 1vw;
+        border-width: 0.2vw;
+        font-size: 250%;
     }
     @media (min-aspect-ratio: 12/16){
         .calculator{
@@ -50,7 +54,16 @@ body{
             align-self: flex-start;
             margin-top: 10vw;
         }
+        .button{
+            font-size: 200%;
+        }
     }
+    @media (max-aspect-ratio: 6/16){
+        .button{
+            font-size: 100%;
+        }
+    }
+
 }
 
 .buttons-container{
@@ -60,21 +73,31 @@ body{
     width: 90%;
     margin-top: auto;
     margin-bottom: 5%;
-    gap: 1%;
+    gap: 1.5%;
 }
 
 .row-of-buttons{
     flex: 1;
     display:flex;
-    gap: 1%;
+    gap: 1.5%;
 }
 
 .button{
+    display: flex;
     flex: 1;
     border-style: solid;
+    justify-content: center;
+    align-items: center;
+}
+
+.button:hover{
+    transform: scale(1.03);
 }
 
 .wider-button{
     flex: 2.1;
-    border-style: solid;
+}
+
+.wider-button:hover{
+    transform: scale(1.02);
 }
