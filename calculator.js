@@ -1,13 +1,28 @@
+const BODY = document.querySelector("body");
 const operands = ["add", "substract", "multiply", "divide", "modulo"];
+const operandSymbols = ["+", "-", "%", "x", "÷"];
 const VALUES = {00:["AC", "clear"], 01:["C", "delete"], 02:["%", "modulo"], 03:["÷", "divide"], 
                 10:["7", "num"], 11:["8", "num"], 12:["9", "num"], 13:["+", "add"], 20:["4", "num"], 
                 21:["5", "num"], 22:["6", "num"], 23:["-", "substract"], 30:["1", "num"], 31:["2", "num"], 
                 32:["3", "num"], 33:["x", "multiply"], 40:["0", "num"], 41:[".", "point"], 42:["=", "equal"]};
+const KEYBOARD_NUMBERS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const KEYBOARD_OPERANDS = ["/","*", "X" ];
 
-let allowPoint = true;
+let allowPoint = true, initialZero = true, resultGiven = false;
+let operandChosen, firstNumber, secondNumber, result, operationLength, isNumButton, isPointButton, isOperandButton, isEqualButton, CheckDivisionByZero, rickrollActivated;
 
 function hasDecimalDigits(number){
     return (number % 1) ? true : false;
+}
+
+function deleteLastInScreen(){
+    screenText.innerText = screenText.innerText.slice(0, screenText.innerText.length - 1);
+}
+
+function clearScreen(){
+    removeRickrolls();
+    screenText.innerText = "";
+    allowPoint = true;
 }
 
 function add(num1, num2){
@@ -33,16 +48,58 @@ function module(num1, num2){
     return (hasDecimalDigits(result)) ? result.toFixed(3) : result;
 }
 
+function addRickrolls(){
+    rickrollActivated = true;
+    BODY.classList.add("angry");
+    const operandsAndEqual = document.querySelectorAll(".operand, .equal");
+    for (let eachButton of operandsAndEqual){
+        const rickRollButton = document.createElement("a");
+        rickRollButton.innerHTML = eachButton.innerHTML;
+        rickRollButton.setAttribute("href", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        rickRollButton.classList.add("rickroll");
+        eachButton.appendChild(rickRollButton);
+        eachButton.removeChild(eachButton.firstElementChild);
+    }
+}
+
+function removeRickrolls(){
+    rickrollActivated = false;
+    let noStrangersToLove = (screenText.classList.contains("weAreNoStrangersToLove")) ? true : false;
+    if (noStrangersToLove)return;
+    if (!noStrangersToLove && BODY.classList.contains("angry"))BODY.classList.remove("angry");
+    const rickRollButtons = document.querySelectorAll(".rickroll");
+    if (rickRollButtons[1]){
+        for (let rickroll of rickRollButtons){
+            let button = rickroll.parentNode;
+            button.innerHTML = rickroll.innerHTML;
+            rickroll.remove();
+        }
+    }
+}
+
+function deleteAndPrepareRickrolls(){
+    if (screenText.innerText[screenText.innerText.length - 1] === ".") allowPoint = true;
+        deleteLastInScreen();
+        if (screenText.innerText===""){
+            screenText.innerText = "0";
+            initialZero = true;
+        }
+        const lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
+        (lastTwoInScreen === "÷0") ? addRickrolls() : removeRickrolls();        
+}
+
 function operate(operator, num1, num2){
     switch(operator){
-        case "add":
+        case "+":
             return add(num1, num2);
-        case "substract":
+        case "-":
             return substract(num1, num2);
-        case "multiply":
+        case "x":
             return multiply(num1, num2);
-        case "divide":
+        case "÷":
             return divide(num1, num2);
+        case "%":
+            return module(num1, num2);
     }
 }
 
@@ -50,6 +107,129 @@ function writeToScreen(value){
     // Make sure that the point is only used once
     if (value !== "." || allowPoint) screenText.innerText += value;
     if (value === ".") allowPoint = false;
+}
+
+function doCalculations(button){
+    // Easier way of adressing the class each button belongs to.
+    isNumButton = false, isPointButton = false, isOperandButton = false, isEqualButton = false;
+    if (typeof button === "object"){
+        if (button.classList.contains("num")){
+            isNumButton = true;
+        }
+        else if (button.classList.contains("operand")){
+            isOperandButton = true;
+        }
+        else if (button.classList.contains("point")){
+            isPointButton = true;
+        }
+        else{
+            isEqualButton = true;
+        }
+    }
+
+    // keyboard support
+    if (typeof button === "string"){
+        if (KEYBOARD_NUMBERS.includes(button)){
+            button = {"value": button};
+            isNumButton = true;
+        }
+        else if (operandSymbols.includes(button)){
+            button = {"value": button};
+            isOperandButton = true;
+        }
+        else if (KEYBOARD_OPERANDS.includes(button)){
+            button = (button === "X" || button === "*") ? "x" : "÷";
+            button = {"value": button};
+            isOperandButton = true;
+        }
+        else if (button === "."){
+            button = {"value": button};
+            isPointButton = true;
+        }
+        else if (button === "Enter" || button === "="){
+            button = {"value": "="};
+            isEqualButton = true;
+        }
+        else{
+            return;
+        }
+    }
+
+    // replace the initial zero on screen with the current button value as long as it's either a number, decimal point, or minus.
+    if (initialZero){
+        if (isOperandButton && button.value !== "-"){
+            return;
+        }
+        if(!isEqualButton){
+            clearScreen();
+            initialZero = false;
+        }
+    }
+    // After giving a result, if the user inputs a new number it should replace the previous result. 
+    //If the user inputs, an operand, or a decimal point instead, it should let the user keep working with the previous result.
+    if (resultGiven){
+        if(isNumButton)clearScreen();
+        resultGiven = false;
+    }
+    // if the last thing in screen is an operand, and the user tries to input another one, remove the former one.
+    let lastInScreen =  screenText.innerText.slice(screenText.innerText.length - 1, screenText.innerText.length);
+    if (isOperandButton && operandSymbols.includes(lastInScreen)){
+        screenText.innerText = screenText.innerText.slice(0, screenText.innerText.length - 1);
+    }
+    // if the button isn't the equal button, print it to the screen.
+    if(!isEqualButton){
+        writeToScreen(button.value);
+    }
+
+    // If the last two chars in screen are "÷0", all operand buttons, and the equal button, turn into links.
+    const lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
+    CheckDivisionByZero = (lastTwoInScreen == "÷0") ? true : false;
+    (CheckDivisionByZero) ? addRickrolls() : removeRickrolls();
+
+    if (isOperandButton || isEqualButton){
+        //if( isEqualButton && rickrollActivated) window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+        allowPoint = true;
+        // split operation when there is an operand and store each of the numbers into an array.
+        let operation = screenText.innerText.replaceAll("+", "@").replaceAll("-", "@").replaceAll("x", "@").replaceAll("÷", "@").replaceAll("%", "@");
+        operation = operation.split("@");
+        // if there is only one element within the array, store it for future calculations.
+        if(!operation[1]){
+            result = Number(operation[0]);
+            if (isEqualButton){
+                return;
+            }
+            operandChosen = button.value;
+            operationLength = operation.length;
+            return;
+        }
+        else{
+            // Allow user to change operand.
+            if (isOperandButton && (operationLength === operation.length)){
+                operandChosen = button.value;
+                return;
+            }
+            // There needs to be a different index number because when an operand is input, there is an extra empty element within the operation array (see lines 161 and 162).
+            let lastNumber = (isOperandButton) ? Number(operation[operation.length - 2]) : Number(operation[operation.length - 1]);
+            // disable equal button when the result was already shown.
+            if (operandChosen === "="){return;}
+            result = Number(operate(operandChosen, result, lastNumber));
+            // Don't let user divide by 0.
+            if (operandChosen === "÷" && lastNumber === 0){
+                result = "We're no strangers to love, you know the rules and so do I...";
+                screenText.classList.add("weAreNoStrangersToLove");
+            }
+            resultGiven = true;
+            clearScreen();
+            writeToScreen(result);
+            //update operandChosen and operationLength.
+            operandChosen = button.value;
+            operationLength = operation.length;
+            if (isOperandButton) {
+                resultGiven = false;
+                doCalculations(button.value);
+            }
+        }
+    }
 }
 
 // Create calculator's buttons
@@ -76,29 +256,41 @@ for (let rowsIterator = 0; rowsIterator < 5; rowsIterator++){
             buttonsIterator++;
         }
 
-        if(button.classList.contains("num") || button.classList.contains("operand") || button.classList.contains("point")){
-            button.addEventListener("click", ()=>{
-                writeToScreen(button.value);
-                if (button.classList.contains("operand")) allowPoint = true;
-            });
-        }
-        else if (button.classList.contains("clear")){
-            button.addEventListener("click", ()=>{
-                screenText.innerText = "";
-                allowPoint = true;
-            });
-        }
-        else if (button.classList.contains("delete")){
-            button.addEventListener("click", ()=>{
-                if (screenText.innerText[screenText.innerText.length - 1] === ".") allowPoint = true;
-                screenText.innerText = screenText.innerText.slice(0, screenText.innerText.length - 1);
-            });
+        if(button.classList.contains("num") || button.classList.contains("operand") || button.classList.contains("point") || button.classList.contains("equal")){ 
+            button.addEventListener("click", ()=>{doCalculations(button)});
         }
 
-
+        // clear button 
+        if (button.classList.contains("clear")){
+            button.addEventListener("click", ()=>{
+                clearScreen();
+                screenText.innerText = "0"
+                initialZero = true;
+            });
+        }
+        // delete button
+        if (button.classList.contains("delete")){
+            button.addEventListener("click", ()=>{deleteAndPrepareRickrolls()});
+        }
         rowOfButtons.appendChild(button);
     } 
 }
 // Update calculator's screen
 const calculatorScreen = document.querySelector(".screen");
 const screenText = document.querySelector(".screenText");
+screenText.innerText = "0";
+
+// Keyboard support
+window.addEventListener("keydown", function(e){
+    if (e.key === "Escape"){
+        clearScreen();
+        screenText.innerText = "0"
+        initialZero = true;
+        return;
+    }
+    if (e.key === "Backspace"){
+        deleteAndPrepareRickrolls();
+        return;
+    }
+    doCalculations(e.key);
+});
