@@ -318,6 +318,8 @@ for (let rowsIterator = 0; rowsIterator < 5; rowsIterator++){
                 clearScreen();
                 screenText.innerText = "0"
                 initialZero = true;
+                if (screenText.classList.contains("weAreNoStrangersToLove")) {screenText.classList.remove("weAreNoStrangersToLove")};
+                removeRickrolls();
             });
         }
         // delete button
@@ -338,7 +340,7 @@ window.addEventListener("keydown", function(e){
         clearScreen();
         screenText.innerText = "0"
         initialZero = true;
-        if (rickrollActivated) removeRickrolls();
+        if (rickrollActivated) rickrollActivated = false;
         return;
     }
     if (e.key === "Backspace"){
