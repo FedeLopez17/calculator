@@ -5,70 +5,47 @@
 
 body{
     display: flex;
-    background-color: aquamarine;
     justify-content: center;
     align-items: center;
     width:100vw;
     height:100vh;
+    background-image: linear-gradient(0deg, #f5f5f5/*whitesmoke*/ 50%, #cde8ed 50%);
+    background-size: 30% 30%;
 }
 
 .calculator{
-    background-color: grey;
+    background-color: #d3d3d3; /*lightgrey*/
+    border-style: solid;
+    border-color: #282828;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    animation: grow-and-shake 0.5s;
+    animation-iteration-count: 1;
 }
-/* Media queries for responsiveness*/
-@media (orientation: landscape){
-    .calculator{
-        width: 60vh;
-        height: 90vh;
-        border-radius: 4vh;   
-    }
-    .button{
-        border-radius: 1vh;
-        border-width: 0.2vh;
-        font-size: 200%;
-    }
-}
-@media (orientation: portrait){
-    .calculator{
-        border-radius: 4vw;
-    }
-    .button{
-        border-radius: 1vw;
-        border-width: 0.2vw;
-        font-size: 250%;
-    }
-    @media (min-aspect-ratio: 12/16){
-        .calculator{
-            width: 60vw;
-            height: 90vw;  
-        }
-    }
-    @media (max-aspect-ratio: 12/16){
-        .calculator{
-            width: 80vw;
-            height: 120vw;
-            align-self: flex-start;
-            margin-top: 10vw;
-        }
-        .button{
-            font-size: 200%;
-        }
-    }
-    @media (max-aspect-ratio: 6/16){
-        .button{
-            font-size: 100%;
-        }
-    }
 
+
+@keyframes grow-and-shake {
+    0% { transform:  scale(0.3) rotate(-4deg)}
+    10% { transform: scale(0.3) rotate(-6deg)}
+    20% { transform: scale(0.3) rotate(-8deg)}
+    30% { transform: scale(0.3) rotate(-4deg)}
+    40% { transform: scale(0.3) }
+    50% { transform: scale(0.4) rotate(4deg)}
+    60% { transform: scale(0.5) rotate(6deg)}
+    70% { transform: scale(0.6) rotate(8deg)}
+    80% { transform: scale(0.7) rotate(4deg)}
+    90% { transform: scale(0.8) }
+    100% { transform:scale(0.9) }
 }
 
 .screen{
     display: flex;
-    background-color: whitesmoke;
+    background-color: #f5f5f5; /*whitesmoke*/
+    border-style: solid;
+    border-width: inherit;
+    border-color: #282828;
     width: 90%;
     height: 25%;
     border-radius: 3%/6%;
@@ -79,6 +56,7 @@ body{
 
 .screenText{
     margin-right: 5%;
+    font-family: sans-serif;
 }
 
 .buttons-container{
@@ -100,9 +78,27 @@ body{
 .button{
     display: flex;
     flex: 1;
+    font-family: 'Orbitron', sans-serif;
     border-style: solid;
+    border-color: #282828;
     justify-content: center;
     align-items: center;
+}
+
+.operand{
+    background-color: #8fbc8f; /*darkseagreen*/
+}
+
+.num, .point{
+    background-color: #fafad2; /*lightgoldenrodyellow*/
+}
+
+.clear, .delete{
+    background-color: #ff7f50; /*coral*/
+}
+
+.equal{
+    background-color: #87ceeb; /*skyblue*/
 }
 
 .button:hover{
@@ -117,6 +113,59 @@ body{
     transform: scale(1.02);
 }
 
+/* Media queries for responsiveness*/
+@media (orientation: landscape){
+    .calculator{
+        width: 60vh;
+        height: 90vh;
+        border-radius: 4vh;
+        box-shadow: -0.8vh 0.8vh 0 0.4vh #282828;
+        border-width: 0.4vh;
+    }
+    .button{
+        border-radius: 1vh;
+        font-size: 3vh;
+        border-width: 0.4vh;
+    }
+    .screenText{
+        font-size: 5vh;
+    }
+    .weAreNoStrangersToLove{
+        font-size: 3vh;
+    }
+}
+@media (orientation: portrait){
+    .calculator{
+        border-radius: 4vw;
+        border-width: 0.4vw;
+        box-shadow: -0.8vw 0.8vw 0 0.4vw #282828;
+    }
+    .button{
+        border-radius: 1vw;
+        font-size: 3vw;
+        border-width: 0.4vw;
+    }
+    .screenText{
+        font-size: 5vw;
+    }
+    .weAreNoStrangersToLove{
+        font-size: 3vw;
+    }
+    @media (min-aspect-ratio: 12/16){
+        .calculator{
+            width: 60vw;
+            height: 90vw;  
+        }
+    }
+    @media (max-aspect-ratio: 12/16){
+        .calculator{
+            width: 80vw;
+            height: 120vw;
+            align-self: flex-start;
+            margin-top: 10vw;
+        }
+    }
+}
 
 a.rickroll{
     width:100%;
@@ -124,7 +173,7 @@ a.rickroll{
     display:flex;
     justify-content: center;
     align-items: center;
-    color: black;
+    color: #000000;
     text-decoration: none;
 }
 
@@ -137,3 +186,22 @@ a.rickroll{
     background-image: url(./images/gifsCollage.gif);
 }
 
+.angry-text{
+    color: darkred;
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+}
+ 
+@keyframes shake {
+    0% { transform: scale(1.1) translate(0.1vh, 0.1vh) rotate(0deg); }
+    10% { transform: scale(1.1) translate(-0.1vh, -0.2vh) rotate(-1deg); }
+    20% { transform: scale(1.2) translate(-0.3vh, 0vh) rotate(1deg); }
+    30% { transform: scale(1.2) translate(0.3vh, 0.2vh) rotate(0deg); }
+    40% { transform: scale(1.1) translate(0.1vh, -0.1vh) rotate(1deg); }
+    50% { transform: scale(1.1) translate(-0.1vh, 0.2vh) rotate(-1deg); }
+    60% { transform: scale(1.2) translate(-0.3vh, 0.1vh) rotate(0deg); }
+    70% { transform: scale(1.2) translate(0.3vh, 0.1vh) rotate(-1deg); }
+    80% { transform: scale(1.1) translate(-0.1vh, -0.1vh) rotate(1deg); }
+    90% { transform: scale(1.1) translate(0.1vh, 0.2vh) rotate(0deg); }
+    100% { transform: scale(1.2) translate(0.1vh, -0.2vh) rotate(-1deg); }
+}
