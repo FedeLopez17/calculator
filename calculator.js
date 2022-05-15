@@ -243,6 +243,11 @@ function doCalculations(button){
         // split operation when there is an operand and store each of the numbers into an array.
         let operation = screenText.innerText.replaceAll("+", "@").replaceAll("-", "@").replaceAll("x", "@").replaceAll("÷", "@").replaceAll("%", "@");
         operation = operation.split("@");
+        // the minus sign of the first number isn't an operand.
+        if(screenText.innerText[0] === "-"){
+            operation[1] = "-" + operation[1];
+            operation.shift();
+        }
         // if there is only one element within the array, store it for future calculations.
         if(!operation[1]){
             result = Number(operation[0]);
@@ -261,6 +266,7 @@ function doCalculations(button){
             }
             // There needs to be a different index number because when an operand is input, there is an extra empty element within the operation array (see lines 161 and 162).
             let lastNumber = (isOperandButton) ? Number(operation[operation.length - 2]) : Number(operation[operation.length - 1]);
+            if (operandChosen === "="){operandChosen = button.value};
             // disable equal button when the result was already shown.
             if (operandChosen === "="){return;}
             result = Number(operate(operandChosen, result, lastNumber));
