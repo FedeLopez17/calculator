@@ -1,6 +1,9 @@
 *{
     padding: 0;
     margin: 0;
+    /*Disables double-tap zoom*/
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
 }
 
 body{
