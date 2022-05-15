@@ -338,7 +338,7 @@ window.addEventListener("keydown", function(e){
         clearScreen();
         screenText.innerText = "0"
         initialZero = true;
-        if (rickrollActivated) rickrollActivated = false;
+        if (rickrollActivated) removeRickrolls();
         return;
     }
     if (e.key === "Backspace"){
