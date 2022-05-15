@@ -48,6 +48,58 @@ function module(num1, num2){
     return (hasDecimalDigits(result)) ? result.toFixed(3) : result;
 }
 
+function getTypeOfButton(button){
+    isNumButton = false, isPointButton = false, isOperandButton = false, isEqualButton = false;
+    if (typeof button === "object"){
+        if (button.classList.contains("num")){
+            isNumButton = true;
+            return;
+        }
+        else if (button.classList.contains("operand")){
+            isOperandButton = true;
+            return;
+        }
+        else if (button.classList.contains("point")){
+            isPointButton = true;
+            return;
+        }
+        else{
+            isEqualButton = true;
+            return;
+        }
+    }
+    // keyboard support
+    if (KEYBOARD_NUMBERS.includes(button)){
+        button = {"value": button};
+        isNumButton = true;
+        return button;
+    }
+    else if (operandSymbols.includes(button)){
+        button = {"value": button};
+        isOperandButton = true;
+        return button;
+    }
+    else if (KEYBOARD_OPERANDS.includes(button)){
+        button = (button === "X" || button === "*") ? "x" : "÷";
+        button = {"value": button};
+        isOperandButton = true;
+        return button;
+    }
+    else if (button === "."){
+        button = {"value": button};
+        isPointButton = true;
+        return button;
+    }
+    else if (button === "Enter" || button === "="){
+        button = {"value": "="};
+        isEqualButton = true;
+        return button;
+    }
+    else{
+        return "invalid key";
+    }
+}
+
 function checkDivisionByZero(){
     let lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
     if (lastTwoInScreen === "÷0") return true; 
@@ -126,55 +178,28 @@ function operate(operator, num1, num2){
 }
 
 function writeToScreen(value){
+    //operands input after a rickroll shouldn't be written on screen
+    if (screenText.innerHTML === "We're no strangers to love, <br>you know the rules and so do I..." && operandSymbols.includes(value)) return;
     // Make sure that the point is only used once
     if (value !== "." || allowPoint) screenText.innerText += value;
     if (value === ".") allowPoint = false;
     if (value === "rickroll") screenText.innerHTML = "We're no strangers to love, <br>you know the rules and so do I...";
-}
+}    
 
 function doCalculations(button){
-    // Easier way of adressing the class each button belongs to.
-    isNumButton = false, isPointButton = false, isOperandButton = false, isEqualButton = false;
-    if (typeof button === "object"){
-        if (button.classList.contains("num")){
-            isNumButton = true;
-        }
-        else if (button.classList.contains("operand")){
-            isOperandButton = true;
-        }
-        else if (button.classList.contains("point")){
-            isPointButton = true;
-        }
-        else{
-            isEqualButton = true;
-        }
+    // if button is a string, due to being a keyboard input, get the type of button and convert said button to an object.
+    if (typeof button === "string"){
+        button = getTypeOfButton(button);
+        if (button === "invalid key") return;    
+    }
+    else{
+        getTypeOfButton(button);
     }
 
-    // keyboard support
-    if (typeof button === "string"){
-        if (KEYBOARD_NUMBERS.includes(button)){
-            button = {"value": button};
-            isNumButton = true;
-        }
-        else if (operandSymbols.includes(button)){
-            button = {"value": button};
-            isOperandButton = true;
-        }
-        else if (KEYBOARD_OPERANDS.includes(button)){
-            button = (button === "X" || button === "*") ? "x" : "÷";
-            button = {"value": button};
-            isOperandButton = true;
-        }
-        else if (button === "."){
-            button = {"value": button};
-            isPointButton = true;
-        }
-        else if (button === "Enter" || button === "="){
-            button = {"value": "="};
-            isEqualButton = true;
-        }
-        else{
-            return;
+    if(isEqualButton || isOperandButton){
+        if(rickrollActivated){
+            screenText.classList.add("weAreNoStrangersToLove");
+            window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ";
         }
     }
 
