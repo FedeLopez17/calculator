@@ -9,7 +9,7 @@ const KEYBOARD_NUMBERS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const KEYBOARD_OPERANDS = ["/","*", "X" ];
 
 let allowPoint = true, initialZero = true, resultGiven = false;
-let operandChosen, firstNumber, secondNumber, result, operationLength, isNumButton, isPointButton, isOperandButton, isEqualButton, CheckDivisionByZero, rickrollActivated;
+let operandChosen, firstNumber, secondNumber, result, operationLength, isNumButton, isPointButton, isOperandButton, isEqualButton, rickrollActivated;
 
 function hasDecimalDigits(number){
     return (number % 1) ? true : false;
@@ -48,9 +48,24 @@ function module(num1, num2){
     return (hasDecimalDigits(result)) ? result.toFixed(3) : result;
 }
 
+function checkDivisionByZero(){
+    let lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
+    if (lastTwoInScreen === "÷0") return true; 
+    let check = screenText.innerText.split("÷0");
+    if (check[1]) {
+        let checkLetters;
+        for (let letter of check[1]){
+            checkLetters = (letter === "0" || letter === ".") ? true : false;
+            if(!checkLetters)return false;
+        }
+        return true;
+    }
+}
+
 function addRickrolls(){
     rickrollActivated = true;
     BODY.classList.add("angry");
+    screenText.classList.add("angry-text");
     const operandsAndEqual = document.querySelectorAll(".operand, .equal");
     for (let eachButton of operandsAndEqual){
         const rickRollButton = document.createElement("a");
@@ -66,7 +81,10 @@ function removeRickrolls(){
     rickrollActivated = false;
     let noStrangersToLove = (screenText.classList.contains("weAreNoStrangersToLove")) ? true : false;
     if (noStrangersToLove)return;
-    if (!noStrangersToLove && BODY.classList.contains("angry"))BODY.classList.remove("angry");
+    if (!noStrangersToLove && BODY.classList.contains("angry")) {
+        BODY.classList.remove("angry");
+        screenText.classList.remove("angry-text");
+    }
     const rickRollButtons = document.querySelectorAll(".rickroll");
     if (rickRollButtons[1]){
         for (let rickroll of rickRollButtons){
@@ -84,8 +102,12 @@ function deleteAndPrepareRickrolls(){
             screenText.innerText = "0";
             initialZero = true;
         }
-        const lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
-        (lastTwoInScreen === "÷0") ? addRickrolls() : removeRickrolls();        
+        let check = checkDivisionByZero();
+        if (check) {
+            if (!rickrollActivated) addRickrolls()
+            return;
+        }
+        removeRickrolls();        
 }
 
 function operate(operator, num1, num2){
@@ -107,6 +129,7 @@ function writeToScreen(value){
     // Make sure that the point is only used once
     if (value !== "." || allowPoint) screenText.innerText += value;
     if (value === ".") allowPoint = false;
+    if (value === "rickroll") screenText.innerHTML = "We're no strangers to love, <br>you know the rules and so do I...";
 }
 
 function doCalculations(button){
@@ -181,13 +204,16 @@ function doCalculations(button){
         writeToScreen(button.value);
     }
 
-    // If the last two chars in screen are "÷0", all operand buttons, and the equal button, turn into links.
-    const lastTwoInScreen = screenText.innerText.slice(screenText.innerText.length - 2, screenText.innerText.length);
-    CheckDivisionByZero = (lastTwoInScreen == "÷0") ? true : false;
-    (CheckDivisionByZero) ? addRickrolls() : removeRickrolls();
+    // If the the user is trying to divide by zero, all operand buttons, and the equal button, turn into links.
+    let check = checkDivisionByZero();
+    if (check){
+        if (!rickrollActivated) addRickrolls();
+    }
+    else{
+        removeRickrolls();
+    }
 
     if (isOperandButton || isEqualButton){
-        //if( isEqualButton && rickrollActivated) window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
         allowPoint = true;
         // split operation when there is an operand and store each of the numbers into an array.
         let operation = screenText.innerText.replaceAll("+", "@").replaceAll("-", "@").replaceAll("x", "@").replaceAll("÷", "@").replaceAll("%", "@");
@@ -215,7 +241,7 @@ function doCalculations(button){
             result = Number(operate(operandChosen, result, lastNumber));
             // Don't let user divide by 0.
             if (operandChosen === "÷" && lastNumber === 0){
-                result = "We're no strangers to love, you know the rules and so do I...";
+                result = "rickroll";
                 screenText.classList.add("weAreNoStrangersToLove");
             }
             resultGiven = true;
@@ -224,6 +250,7 @@ function doCalculations(button){
             //update operandChosen and operationLength.
             operandChosen = button.value;
             operationLength = operation.length;
+            // if button is an operand, keep working with the last result and add the operand after it.
             if (isOperandButton) {
                 resultGiven = false;
                 doCalculations(button.value);
