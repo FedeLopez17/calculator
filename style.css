@@ -134,6 +134,9 @@ body{
     .screenText{
         font-size: 5vh;
     }
+    .angry{
+        background-image: url(./images/gifsCollage.gif);
+    }
     .weAreNoStrangersToLove{
         font-size: 3vh;
     }
@@ -163,6 +166,9 @@ body{
             width: 60vw;
             height: 90vw;  
         }
+        .angry{
+            background-image: url(./images/gifsCollage.gif);
+        }
     }
     @media (max-aspect-ratio: 12/16){
         .calculator{
@@ -187,10 +193,6 @@ a.rickroll{
 .weAreNoStrangersToLove{
     margin-left: auto;
     margin-right: auto;
-}
-
-.angry{
-    background-image: url(./images/gifsCollage.gif);
 }
 
 .angry-text{
